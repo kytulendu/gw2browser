@@ -371,6 +371,7 @@ namespace gw2b {
         case FCC_DXTL:
         case FCC_DXTN:
         case FCC_3DCX:
+        case FCC_BC7X:
             return numBlocks * 16;
         default:
             wxLogMessage( wxT( "Unsupported ATEX texture format." ) );
@@ -581,7 +582,8 @@ namespace gw2b {
                 ( compression == FCC_DXTN ) ||
                 ( compression == FCC_DXTL ) ||
                 ( compression == FCC_DXTA ) ||
-                ( compression == FCC_3DCX );
+                ( compression == FCC_3DCX ) ||
+                ( compression == FCC_BC7X );
         }
 
         return false;

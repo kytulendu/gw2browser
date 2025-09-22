@@ -73,6 +73,7 @@ namespace gw2b {
         FCC_DXTN = 0x4e545844,
         FCC_DXTL = 0x4c545844,
         FCC_DXTA = 0x41545844,
+        FCC_BC7X = 0x58374342,
         FCC_R32F = 0x00000072,
 
         // RIFF FourCC
