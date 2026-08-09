@@ -39,13 +39,15 @@ namespace gw2b {
     };
 
     DatFile::DatFile( )
-        : m_lastReadEntry( -1 ) {
+        : m_lastReadEntry( -1 )
+        , m_fileSize( 0 ) {
         ::memset( &m_datHead, 0, sizeof( m_datHead ) );
         ::memset( &m_mftHead, 0, sizeof( m_mftHead ) );
     }
 
     DatFile::DatFile( const wxString& p_filename )
-        : m_lastReadEntry( -1 ) {
+        : m_lastReadEntry( -1 )
+        , m_fileSize( 0 ) {
         ::memset( &m_datHead, 0, sizeof( m_datHead ) );
         ::memset( &m_mftHead, 0, sizeof( m_mftHead ) );
         this->open( p_filename );
@@ -64,15 +66,16 @@ namespace gw2b {
             if ( !m_file.IsOpened( ) ) {
                 break;
             }
+            m_fileSize = static_cast<uint64>( m_file.Length( ) );
 
             // Read header
-            if ( static_cast<size_t>( m_file.Length( ) ) < sizeof( m_datHead ) ) {
+            if ( m_fileSize < sizeof( m_datHead ) ) {
                 break;
             }
             m_file.Read( &m_datHead, sizeof( m_datHead ) );
 
             // Read MFT Header
-            if ( static_cast<uint64>( m_file.Length( ) ) < m_datHead.mftOffset + m_datHead.mftSize ) {
+            if ( m_fileSize < m_datHead.mftOffset + m_datHead.mftSize ) {
                 break;
             }
             m_file.Seek( m_datHead.mftOffset, wxFromStart );
@@ -91,7 +94,7 @@ namespace gw2b {
             m_file.Read( m_mftEntries.GetPointer( ), m_datHead.mftSize );
 
             // Read the file id entry table
-            if ( static_cast<uint64>( m_file.Length( ) ) < m_mftEntries[2].offset + m_mftEntries[2].size ) {
+            if ( m_fileSize < m_mftEntries[2].offset + m_mftEntries[2].size ) {
                 break;
             }
             if ( m_mftEntries[2].size % sizeof( ANetFileIdEntry ) ) {
@@ -151,6 +154,8 @@ namespace gw2b {
 
         // Remove MFT entries and close the file
         m_mftEntries.Clear( );
+        m_fileSize = 0;
+        m_lastReadEntry = -1;
         m_file.Close( );
     }
 
@@ -250,7 +255,7 @@ namespace gw2b {
             }
 
             auto entryIsInUse = ( m_mftEntries[p_entryNum].entryFlags & ANMEF_InUse );
-            auto fileIsLargeEnough = ( uint64 ) m_file.Length( ) >= m_mftEntries[p_entryNum].offset + m_mftEntries[p_entryNum].size;
+            auto fileIsLargeEnough = m_fileSize >= m_mftEntries[p_entryNum].offset + m_mftEntries[p_entryNum].size;
             if ( !entryIsInUse || !fileIsLargeEnough ) {
                 return 0;
             }

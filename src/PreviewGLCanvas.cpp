@@ -94,7 +94,6 @@ namespace gw2b {
         this->Bind( wxEVT_CLOSE_WINDOW, &PreviewGLCanvas::onClose, this );
         this->Bind( wxEVT_SIZE, &PreviewGLCanvas::onResize, this );
         this->Bind( wxEVT_ERASE_BACKGROUND, &PreviewGLCanvas::onEraseBackground, this );
-        this->Bind( wxEVT_IDLE, &PreviewGLCanvas::onIdle, this );
 
         // Start render timer
         m_renderTimer->start( );
@@ -408,13 +407,6 @@ namespace gw2b {
     void PreviewGLCanvas::onEraseBackground(wxEraseEvent & p_event)
     {
         // Empty function
-    }
-
-    void PreviewGLCanvas::onIdle(wxIdleEvent& p_event)
-    {
-        this->Refresh(false);
-        p_event.RequestMore();
-        wxMilliSleep(1);
     }
 
 }; // namespace gw2b
