@@ -50,6 +50,7 @@ namespace gw2b {
         EntryToIdArray      m_entryToId;
         InputBufferArray    m_inputBuffer;
         uint                m_lastReadEntry;
+        uint64              m_fileSize;
     private:
         enum MFTFileOffset {
             MFT_FILE_OFFSET = 16

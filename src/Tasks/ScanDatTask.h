@@ -40,6 +40,10 @@ namespace gw2b {
         std::shared_ptr<DatIndex>   m_index;
         Array<byte>                 m_outputBuffer;
         DatFile&                    m_datFile;
+    private:
+        enum {
+            ScanBatchSize = 64      /**< Files to scan per perform( ) call. */
+        };
     public:
         ScanDatTask( const std::shared_ptr<DatIndex>& p_index, DatFile& p_datFile );
         virtual ~ScanDatTask( );
@@ -47,6 +51,9 @@ namespace gw2b {
         virtual bool init( ) override;
         virtual void perform( ) override;
     private:
+        /** Scans a single file and adds it to the index.
+        *  \param[in]  p_entryNumber    MFT file number to scan. */
+        void scanFile( uint32 p_entryNumber );
         uint requiredIdentificationSize( const byte* p_data, size_t p_size, ANetFileType p_fileType );
         bool isBitmapFontChunk(uint p_baseId);
         DatIndexCategory* categorize( ANetFileType p_fileType, const byte* p_data, size_t p_size );

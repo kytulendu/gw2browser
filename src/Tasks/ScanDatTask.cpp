@@ -54,12 +54,23 @@ namespace gw2b {
     }
 
     void ScanDatTask::perform( ) {
+        for ( uint i = 0; i < ScanBatchSize; i++ ) {
+            if ( this->isDone( ) ) {
+                break;
+            }
+            this->scanFile( this->currentProgress( ) );
+        }
+
+        this->setText( wxString::Format( wxT( "Scanning .dat: %d/%d" ), this->currentProgress( ), this->maxProgress( ) ) );
+    }
+
+    void ScanDatTask::scanFile( uint32 p_entryNumber ) {
         uint bytetoread = 32;
         // Make sure the output buffer is big enough
         this->ensureBufferSize( bytetoread );
 
         // Read file
-        uint32 entryNumber = this->currentProgress( );
+        uint32 entryNumber = p_entryNumber;
         uint size = m_datFile.peekFile( entryNumber, bytetoread, m_outputBuffer.GetPointer( ) );
 
         // Skip if empty
@@ -115,7 +126,6 @@ namespace gw2b {
         newEntry.finalizeAdd( );
 
         // Delete the reader and proceed to the next file
-        this->setText( wxString::Format( wxT( "Scanning .dat: %d/%d" ), entryNumber, this->maxProgress( ) ) );
         this->setCurrentProgress( entryNumber + 1 );
     }
 
