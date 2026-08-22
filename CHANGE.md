@@ -1,16 +1,19 @@
 Change log
 ----------
 
-Gw2Browser_2022-xx-xx (1.0.9.1)
+Gw2Browser_2026-xx-xx (1.0.9.1)
 -------------------------------
 Change:
 - Linux port
+- Improve index loading and .dat scanning performance.
 - Add AFNT file support.
 - Add find by file id function.
 - Add model's lightmap, specular and dye map export.
+- Add support for BC7 texture compression.
+- Categorize CTEX.
 - Model viewer lightmap support.
 - Model viewer now load DXT5 texture directly from ATEX file.
-- Properly implement specular maping for Guild Wars 2 texture.
+- Properly implement specular mapping for Guild Wars 2 texture.
 - Set Model viewer light position at camera position.
 - Update category name.
 - Use KDE Breeze icons as the old one are hard to see on Windows 10.
@@ -24,22 +27,22 @@ Gw2Browser_2017-01-07 (1.0.8.1)
 Change:
 - Add string, text and eula file viewer.
 - Add sound player.
-- Add normal maping, specular mapping, model lighting, Anisotropic texture filtering
-to model renderer. Set anisotropic texture filtering to maximumn supported by GPU.
+- Add normal mapping, specular mapping, model lighting, Anisotropic texture filtering
+to model renderer. Set anisotropic texture filtering to maximum supported by GPU.
 - Add ModelViewer toggle indicator.
-- Reduce texture memory usuage when model viewer load texture.
+- Reduce texture memory usage when model viewer load texture.
 - Change model renderer fov to 45 degree.
 - When export model with textures, skip if the texture file is already exists.
 - PNG file support.
 - Add text file detection.
-- Faster speed when scaning string files.
+- Faster speed when scanning string files.
 - When export model, also export all materials.
 - Add first-person camera (for use with map viewer in future).
 
 Fix:
 - Fix memory leak in model viewer.
 - Fix string and eula file export bug.
-- Fix text cliping when model is close to camera.
+- Fix text clipping when model is close to camera.
 - Fix crash on viewing model that have no material or uvs or missing texture.
 - Fix crash on reading some video file.
 - Fix model viewer not work on Intel HD Graphics.
@@ -78,7 +81,7 @@ since comma some times use in the strings.
 
 Fix:
 - Fix some texture not in it's sub category.
-- Fix Wavefront .obj formating if the model not have uv.
+- Fix Wavefront .obj formatting if the model not have uv.
 - Eliminate z-fighting (hopefully).
 
 Gw2Browser_2014-10-06
