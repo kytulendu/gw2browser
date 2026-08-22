@@ -32,6 +32,7 @@
 #include <wx/imaglist.h>
 #include <wx/treectrl.h>
 #include <set>
+#include <unordered_map>
 
 #include "DatIndex.h"
 
@@ -140,9 +141,13 @@ namespace gw2b {
     class CategoryTree : public wxTreeCtrl, public IDatIndexListener {
         wxDECLARE_DYNAMIC_CLASS( CategoryTree );
         typedef std::set<ICategoryTreeListener*>    ListenerSet;
+        typedef std::unordered_map<const DatIndexCategory*, wxTreeItemId>   CategoryNodeMap;
     private:
         std::shared_ptr<DatIndex>   m_index;
         ListenerSet                 m_listeners;
+        /** Maps each index category to its node in the tree. Invalidated by
+        *  clearEntries( ) and forgetSubCategories( ). */
+        CategoryNodeMap             m_categoryNodes;
     public:
         /** Constructor. Creates the tree control with the given parent.
         *  \param[in]  p_parent     Parent of the control.
@@ -204,6 +209,11 @@ namespace gw2b {
         virtual int OnCompareItems( const wxTreeItemId& p_item1, const wxTreeItemId& p_item2 );
     private:
         void addCategoryEntriesToArray( Array<const DatIndexEntry*>& p_array, uint& p_index, const DatIndexCategory& p_category ) const;
+
+        /** Drops the cached tree nodes of every category below the given one. Must be
+        *  called before deleting a node's children.
+        *  \param[in]  p_category   Category whose descendants should be forgotten. */
+        void forgetSubCategories( const DatIndexCategory& p_category );
 
         /** Helper method to add an entry to the tree at the right spot, for sorting.
         *  \param[in]  p_parent     Category to add the entry to.

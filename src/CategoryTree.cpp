@@ -155,19 +155,10 @@ namespace gw2b {
             }
         }
 
-        wxTreeItemIdValue cookie;
-        auto child = this->GetFirstChild( parent, cookie );
-
-        // Scan for existing node
-        while ( child.IsOk( ) ) {
-            auto data = static_cast<const CategoryTreeItem*>( this->GetItemData( child ) );
-            if ( data->dataType( ) != CategoryTreeItem::DT_Category ) {
-                break;
-            }
-            if ( data->data( ) == &p_category ) {
-                return child;
-            }
-            child = this->GetNextChild( parent, cookie );
+        // Look for an existing node
+        auto it = m_categoryNodes.find( &p_category );
+        if ( it != m_categoryNodes.end( ) ) {
+            return it->second;
         }
 
         // Node does not exist, add it
@@ -177,7 +168,21 @@ namespace gw2b {
         this->SetItemData( thisNode, itemData );
         // All category nodes have children
         this->SetItemHasChildren( thisNode );
+        m_categoryNodes[&p_category] = thisNode;
         return thisNode;
+    }
+
+    //============================================================================/
+
+    void CategoryTree::forgetSubCategories( const DatIndexCategory& p_category ) {
+        for ( uint i = 0; i < p_category.numSubCategories( ); i++ ) {
+            auto subCategory = p_category.subCategory( i );
+            if ( !subCategory ) {
+                continue;
+            }
+            this->forgetSubCategories( *subCategory );
+            m_categoryNodes.erase( subCategory );
+        }
     }
 
     //============================================================================/
@@ -315,6 +320,7 @@ namespace gw2b {
     //============================================================================/
 
     void CategoryTree::clearEntries( ) {
+        m_categoryNodes.clear( );
         this->DeleteAllItems( );
         this->AddRoot( wxT( "Root" ) );
 
@@ -507,6 +513,11 @@ namespace gw2b {
         if ( !itemData->isDirty( ) ) {
             return;
         } else {
+            // Forget the nodes DeleteChildren( ) is about to destroy
+            auto staleCategory = static_cast<const DatIndexCategory*>( itemData->data( ) );
+            if ( staleCategory ) {
+                this->forgetSubCategories( *staleCategory );
+            }
             this->DeleteChildren( id );
         }
 
