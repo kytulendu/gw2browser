@@ -18,6 +18,7 @@
 #define _POSIX_C_SOURCE 200112L  // for setenv
 #endif
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -430,10 +431,13 @@ static void HandleDisplay(void) {
 #endif
 }
 
-static void StartDisplay(void) {
+static void StartDisplay(const char* filename) {
   int width = kParams.canvas_width;
   int height = kParams.canvas_height;
   int screen_width, screen_height;
+  const char viewername[] = " - WebP viewer";
+  // max linux file len + viewername string
+  char title[4096 + sizeof(viewername)] = "";
   // TODO(webp:365) GLUT_DOUBLE results in flickering / old frames to be
   // partially displayed with animated webp + alpha.
 #if defined(__APPLE__) || defined(_WIN32)
@@ -453,8 +457,9 @@ static void StartDisplay(void) {
       height = screen_height;
     }
   }
+  snprintf(title, sizeof(title), "%s%s", filename, viewername);
   glutInitWindowSize(width, height);
-  glutCreateWindow("WebP viewer");
+  glutCreateWindow(title);
   glutDisplayFunc(HandleDisplay);
   glutReshapeFunc(HandleReshape);
   glutIdleFunc(NULL);
@@ -493,7 +498,7 @@ static void Help(void) {
 }
 
 int main(int argc, char* argv[]) {
-  int c;
+  int c, file_name_argv_index = 1;
   WebPDecoderConfig* const config = &kParams.config;
   WebPIterator* const curr = &kParams.curr_frame;
 
@@ -501,7 +506,7 @@ int main(int argc, char* argv[]) {
 
   if (!WebPInitDecoderConfig(config)) {
     fprintf(stderr, "Library version mismatch!\n");
-    FREE_WARGV_AND_RETURN(-1);
+    FREE_WARGV_AND_RETURN(EXIT_FAILURE);
   }
   config->options.dithering_strength = 50;
   config->options.alpha_dithering_strength = 100;
@@ -513,7 +518,7 @@ int main(int argc, char* argv[]) {
     int parse_error = 0;
     if (!strcmp(argv[c], "-h") || !strcmp(argv[c], "-help")) {
       Help();
-      FREE_WARGV_AND_RETURN(0);
+      FREE_WARGV_AND_RETURN(EXIT_SUCCESS);
     } else if (!strcmp(argv[c], "-noicc")) {
       kParams.use_color_profile = 0;
     } else if (!strcmp(argv[c], "-nofancy")) {
@@ -536,30 +541,34 @@ int main(int argc, char* argv[]) {
              (dec_version >> 16) & 0xff, (dec_version >> 8) & 0xff,
              dec_version & 0xff, (dmux_version >> 16) & 0xff,
              (dmux_version >> 8) & 0xff, dmux_version & 0xff);
-      FREE_WARGV_AND_RETURN(0);
+      FREE_WARGV_AND_RETURN(EXIT_SUCCESS);
     } else if (!strcmp(argv[c], "-mt")) {
       config->options.use_threads = 1;
     } else if (!strcmp(argv[c], "--")) {
-      if (c < argc - 1) kParams.file_name = (const char*)GET_WARGV(argv, ++c);
+      if (c < argc - 1) {
+        kParams.file_name = (const char*)GET_WARGV(argv, ++c);
+        file_name_argv_index = c;
+      }
       break;
     } else if (argv[c][0] == '-') {
       printf("Unknown option '%s'\n", argv[c]);
       Help();
-      FREE_WARGV_AND_RETURN(-1);
+      FREE_WARGV_AND_RETURN(EXIT_FAILURE);
     } else {
       kParams.file_name = (const char*)GET_WARGV(argv, c);
+      file_name_argv_index = c;
     }
 
     if (parse_error) {
       Help();
-      FREE_WARGV_AND_RETURN(-1);
+      FREE_WARGV_AND_RETURN(EXIT_FAILURE);
     }
   }
 
   if (kParams.file_name == NULL) {
     printf("missing input file!!\n");
     Help();
-    FREE_WARGV_AND_RETURN(0);
+    FREE_WARGV_AND_RETURN(EXIT_FAILURE);
   }
 
   if (!ImgIoUtilReadFile(kParams.file_name,
@@ -613,7 +622,7 @@ int main(int argc, char* argv[]) {
 
   // Position iterator to last frame. Next call to HandleDisplay will wrap over.
   // We take this into account by bumping up loop_count.
-  WebPDemuxGetFrame(kParams.dmux, 0, curr);
+  if (!WebPDemuxGetFrame(kParams.dmux, 0, curr)) goto Error;
   if (kParams.loop_count) ++kParams.loop_count;
 
 #if defined(__unix__) || defined(__CYGWIN__)
@@ -627,18 +636,18 @@ int main(int argc, char* argv[]) {
 #ifdef FREEGLUT
   glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 #endif
-  StartDisplay();
+  StartDisplay(argv[file_name_argv_index]);
 
   if (kParams.has_animation) glutTimerFunc(0, decode_callback, 0);
   glutMainLoop();
 
   // Should only be reached when using FREEGLUT:
   ClearParams();
-  FREE_WARGV_AND_RETURN(0);
+  FREE_WARGV_AND_RETURN(EXIT_SUCCESS);
 
  Error:
   ClearParams();
-  FREE_WARGV_AND_RETURN(-1);
+  FREE_WARGV_AND_RETURN(EXIT_FAILURE);
 }
 
 #else   // !WEBP_HAVE_GL
@@ -646,7 +655,7 @@ int main(int argc, char* argv[]) {
 int main(int argc, const char* argv[]) {
   fprintf(stderr, "OpenGL support not enabled in %s.\n", argv[0]);
   (void)argc;
-  return 0;
+  return EXIT_FAILURE;
 }
 
 #endif

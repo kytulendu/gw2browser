@@ -12,6 +12,8 @@ LIBSHARPYUV_BASENAME = libsharpyuv
 ARCH = x86
 !ELSE IF ! [ cl 2>&1 | find "x64" > NUL ]
 ARCH = x64
+!ELSE IF ! [ cl 2>&1 | find "ARM64" > NUL ]
+ARCH = ARM64
 !ELSE IF ! [ cl 2>&1 | find "ARM" > NUL ]
 ARCH = ARM
 !ELSE
@@ -30,7 +32,7 @@ PLATFORM_LDFLAGS = /SAFESEH
 NOLOGO     = /nologo
 CCNODBG    = cl.exe $(NOLOGO) /O2 /DNDEBUG
 CCDEBUG    = cl.exe $(NOLOGO) /Od /Zi /D_DEBUG /RTC1
-CFLAGS     = /I. /Isrc $(NOLOGO) /W3 /EHsc /c
+CFLAGS     = /I. /Isrc $(NOLOGO) /MP /W3 /EHsc /c
 CFLAGS     = $(CFLAGS) /DWIN32 /D_CRT_SECURE_NO_WARNINGS /DWIN32_LEAN_AND_MEAN
 LDFLAGS    = /LARGEADDRESSAWARE /MANIFEST:EMBED /NXCOMPAT /DYNAMICBASE
 LDFLAGS    = $(LDFLAGS) $(PLATFORM_LDFLAGS)
@@ -229,6 +231,7 @@ DSP_DEC_OBJS = \
     $(DIROBJ)\dsp\lossless_neon.obj \
     $(DIROBJ)\dsp\lossless_sse2.obj \
     $(DIROBJ)\dsp\lossless_sse41.obj \
+    $(DIROBJ)\dsp\lossless_avx2.obj \
     $(DIROBJ)\dsp\rescaler.obj \
     $(DIROBJ)\dsp\rescaler_mips32.obj \
     $(DIROBJ)\dsp\rescaler_mips_dsp_r2.obj \
@@ -268,6 +271,7 @@ DSP_ENC_OBJS = \
     $(DIROBJ)\dsp\lossless_enc_neon.obj \
     $(DIROBJ)\dsp\lossless_enc_sse2.obj \
     $(DIROBJ)\dsp\lossless_enc_sse41.obj \
+    $(DIROBJ)\dsp\lossless_enc_avx2.obj \
     $(DIROBJ)\dsp\ssim.obj \
     $(DIROBJ)\dsp\ssim_sse2.obj \
 
@@ -321,6 +325,7 @@ ENC_OBJS = \
 EXTRAS_OBJS = \
     $(DIROBJ)\extras\extras.obj \
     $(DIROBJ)\extras\quality_estimate.obj \
+    $(DIROBJ)\extras\sharpyuv_risk_table.obj \
 
 IMAGEIO_UTIL_OBJS = \
     $(DIROBJ)\imageio\imageio_util.obj \
@@ -336,6 +341,7 @@ UTILS_DEC_OBJS = \
     $(DIROBJ)\utils\color_cache_utils.obj \
     $(DIROBJ)\utils\filters_utils.obj \
     $(DIROBJ)\utils\huffman_utils.obj \
+    $(DIROBJ)\utils\palette.obj \
     $(DIROBJ)\utils\quant_levels_dec_utils.obj \
     $(DIROBJ)\utils\rescaler_utils.obj \
     $(DIROBJ)\utils\random_utils.obj \
@@ -389,7 +395,7 @@ $(DIRBIN)\dwebp.exe: $(IMAGEIO_UTIL_OBJS)
 $(DIRBIN)\dwebp.exe: $(LIBWEBPDEMUX)
 $(DIRBIN)\gif2webp.exe: $(DIROBJ)\examples\gif2webp.obj $(EX_GIF_DEC_OBJS)
 $(DIRBIN)\gif2webp.exe: $(EX_UTIL_OBJS) $(IMAGEIO_UTIL_OBJS) $(LIBWEBPMUX)
-$(DIRBIN)\gif2webp.exe: $(LIBWEBP)
+$(DIRBIN)\gif2webp.exe: $(LIBWEBP) $(LIBSHARPYUV)
 $(DIRBIN)\vwebp.exe: $(DIROBJ)\examples\vwebp.obj $(EX_UTIL_OBJS)
 $(DIRBIN)\vwebp.exe: $(IMAGEIO_UTIL_OBJS) $(LIBWEBPDEMUX) $(LIBWEBP)
 $(DIRBIN)\vwebp_sdl.exe: $(DIROBJ)\extras\vwebp_sdl.obj

@@ -1,5 +1,5 @@
 .\"                                      Hey, EMACS: -*- nroff -*-
-.TH CWEBP 1 "March 17, 2022"
+.TH CWEBP 1 "April 10, 2025"
 .SH NAME
 cwebp \- compress an image file to a WebP file
 .SH SYNOPSIS
@@ -102,6 +102,14 @@ If either (but not both) of the \fBwidth\fP or \fBheight\fP parameters is 0,
 the value will be calculated preserving the aspect\-ratio. Note: scaling
 is applied \fIafter\fP cropping.
 .TP
+.BI \-resize_mode " string
+Specify the behavior of the \fB\-resize\fP option. Possible values are:
+\fBdown_only\fP, \fBup_only\fP, \fBalways\fP (default). \fBdown_only\fP will
+use the values specified by \fB\-resize\fP if \fIeither\fP the input width or
+height are larger than the given dimensions. Similarly, \fBup_only\fP will only
+resize if \fIeither\fP the input width or height are smaller than the given
+dimensions.
+.TP
 .B \-mt
 Use multi\-threading for encoding, if possible.
 .TP
@@ -135,7 +143,9 @@ are used, \fB\-size\fP value will prevail.
 Set a maximum number of passes to use during the dichotomy used by
 options \fB\-size\fP or \fB\-psnr\fP. Maximum value is 10, default is 1.
 If options \fB\-size\fP or \fB\-psnr\fP were used, but \fB\-pass\fP wasn't
-specified, a default value of '6' passes will be used.
+specified, a default value of '6' passes will be used. If \fB\-pass\fP is
+specified, but neither \fB-size\fP nor \fB-psnr\fP are, a target PSNR of 40dB
+will be used.
 .TP
 .BI \-qrange " int int
 Specifies the permissible interval for the quality factor. This is particularly
@@ -178,8 +188,8 @@ Disable strong filtering (if filtering is being used thanks to the
 \fB\-f\fP option) and use simple filtering instead.
 .TP
 .B \-sharp_yuv
-Use more accurate and sharper RGB->YUV conversion if needed. Note that this
-process is slower than the default 'fast' RGB->YUV conversion.
+Use more accurate and sharper RGB->YUV conversion. Note that this process is
+slower than the default 'fast' RGB->YUV conversion.
 .TP
 .BI \-sns " int
 Specify the amplitude of the spatial noise shaping. Spatial noise shaping
@@ -202,7 +212,8 @@ In the VP8 format, the so\-called control partition has a limit of 512k and
 is used to store the following information: whether the macroblock is skipped,
 which segment it belongs to, whether it is coded as intra 4x4 or intra 16x16
 mode, and finally the prediction modes to use for each of the sub\-blocks.
-For a very large image, 512k only leaves room to few bits per 16x16 macroblock.
+For a very large image, 512k only leaves room for a few bits per 16x16
+macroblock.
 The absolute minimum is 4 bits per macroblock. Skip, segment, and mode
 information can use up almost all these 4 bits (although the case is unlikely),
 which is problematic for very large images. The partition_limit factor controls
@@ -211,7 +222,8 @@ useful in case the 512k limit is reached and the following message is displayed:
 \fIError code: 6 (PARTITION0_OVERFLOW: Partition #0 is too big to fit 512k)\fP.
 If using \fB\-partition_limit\fP is not enough to meet the 512k constraint, one
 should use less segments in order to save more header bits per macroblock.
-See the \fB\-segments\fP option.
+See the \fB\-segments\fP option. Note the \fB-m\fP and \fB-q\fP options also
+influence the encoder's decisions and ability to hit this limit.
 
 .SS LOGGING OPTIONS
 These options control the level of output:
@@ -295,12 +307,12 @@ Note: each input format may not support all combinations.
 .B \-noasm
 Disable all assembly optimizations.
 
-.SH BUGS
-Please report all bugs to the issue tracker:
-https://bugs.chromium.org/p/webp
-.br
-Patches welcome! See this page to get started:
-https://www.webmproject.org/code/contribute/submitting\-patches/
+.SH EXIT STATUS
+If there were no problems during execution, \fBcwebp\fP exits with the value of
+the C constant \fBEXIT_SUCCESS\fP. This is usually zero.
+.PP
+If an error occurs, \fBcwebp\fP exits with the value of the C constant
+\fBEXIT_FAILURE\fP. This is usually one.
 
 .SH EXAMPLES
 cwebp \-q 50 -lossless picture.png \-o picture_lossless.webp
@@ -319,6 +331,13 @@ https://chromium.googlesource.com/webm/libwebp
 .PP
 This manual page was written by Pascal Massimino <pascal.massimino@gmail.com>,
 for the Debian project (and may be used by others).
+
+.SH REPORTING BUGS
+Please report all bugs to the issue tracker:
+https://issues.webmproject.org
+.br
+Patches welcome! See this page to get started:
+https://www.webmproject.org/code/contribute/submitting\-patches/
 
 .SH SEE ALSO
 .BR dwebp (1),

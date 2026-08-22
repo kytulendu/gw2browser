@@ -65,6 +65,7 @@ Options:
                          (default: 0 100)
 -crop <x> <y> <w> <h> .. crop picture with the given rectangle
 -resize <w> <h> ........ resize picture (*after* any cropping)
+-resize_mode <string> .. one of: up_only, down_only, always (default)
 -mt .................... use multi-threading if available
 -low_memory ............ reduce memory usage (slower encoding)
 -map <int> ............. print map of extra info
@@ -321,10 +322,13 @@ Per-frame options (only used for subsequent images input):
 
 ```
 -d <int> ............. frame duration in ms (default: 100)
--lossless  ........... use lossless mode (default)
--lossy ... ........... use lossy mode
+-lossless ............ use lossless mode (default)
+-lossy ............... use lossy mode
 -q <float> ........... quality
--m <int> ............. method to use
+-m <int> ............. compression method (0=fast, 6=slowest), default=4
+-exact, -noexact ..... preserve or alter RGB values in transparent area
+                       (default: -noexact, may cause artifacts
+                                 with lossy animations)
 ```
 
 example: `img2webp -loop 2 in0.png -lossy in1.jpg -d 80 in2.tiff -o out.webp`
@@ -351,8 +355,12 @@ Options:
 -lossy ................. encode image using lossy compression
 -mixed ................. for each frame in the image, pick lossy
                          or lossless compression heuristically
+-near_lossless <int> ... use near-lossless image preprocessing
+                         (0..100=off), default=100
+-sharp_yuv ............. use sharper (and slower) RGB->YUV conversion
+                         (lossy only)
 -q <float> ............. quality factor (0:small..100:big)
--m <int> ............... compression method (0=fast, 6=slowest)
+-m <int> ............... compression method (0=fast, 6=slowest), default=4
 -min_size .............. minimize output size (default:off)
                          lossless compression by default; can be
                          combined with -q, -m, -lossy or -mixed
