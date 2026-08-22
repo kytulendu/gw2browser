@@ -55,7 +55,7 @@ If using Visual Studio, also download [Visual Studio integration add-in for Cppc
 
 * [mpg123](https://www.mpg123.de)
 * [OpenAL-Soft](https://openal-soft.org/)
-* [wxWidgets 3.2.4 or higher](http://wxwidgets.org/)
+* [wxWidgets 3.2.11 or higher](http://wxwidgets.org/)
 * [FreeType](http://www.freetype.org/) Included
 * [gw2dattools](https://github.com/kytulendu/gw2dattools) Included
 * [gw2formats](https://github.com/kytulendu/gw2formats) Included
@@ -93,7 +93,7 @@ extract it to the same directory that gw2browser directory is in. Or download th
 and build it your self.
 
 * Download wxWidgets source code from [here](https://github.com/wxWidgets/wxWidgets/releases),
-choose `wxWidgets-3.2.4.zip` or `wxWidgets-3.2.4.7z` and extract it to the same directory
+choose `wxWidgets-3.2.11.zip` or `wxWidgets-3.2.11.7z` and extract it to the same directory
 that gw2browser directory is in. Or download and use the binaries.
 
 **Note:** The library and source code directory must be in directory like this.
@@ -115,7 +115,7 @@ The ROOT is the directory you created in Getting the source code.
          |    +--lib
          |    +--...
          |
-         +--wxWidgets-3.2.4
+         +--wxWidgets-3.2.11
               +--include
               +--src
               +--...
@@ -128,7 +128,7 @@ The ROOT is the directory you created in Getting the source code.
 
 #### Compile wxWidgets:
 
-* Use solution file corresponding with your VS version in directory `wxWidgets-3.2.4/build/msw`.
+* Use solution file corresponding with your VS version in directory `wxWidgets-3.2.11/build/msw`.
   For example, VS2022 is `wx_vc17.sln`, if there is no corresponding solution file for your newer VS,
   just open the highest version of solution file available.
 
@@ -242,7 +242,7 @@ for example set your path to `%path%;C:\TDM-GCC-64\bin`
 
 #### Compile wxWidgets:
 
-* Open Git Bash command line window and change directory to `wxWidgets-3.2.4/build/msw` and use these command.
+* Open Git Bash command line window and change directory to `wxWidgets-3.2.11/build/msw` and use these command.
 
       mingw32-make -j 4 -f makefile.gcc BUILD=debug SHARED=1
 
@@ -338,7 +338,7 @@ for example set your path to `%path%;C:\TDM-GCC-64\bin`
 
 * Copy `libwebpdecoder.dll` from `gw2browser/extern/libwebp/build` directory to `gw2browser/bin`
 
-* Copy following dll files from `wxWidgets-3.2.4/lib/gcc_dll` directory to `gw2browser/bin`
+* Copy following dll files from `wxWidgets-3.2.11/lib/gcc_dll` directory to `gw2browser/bin`
 
       wxbase32u_gcc_custom.dll
       wxmsw32u_aui_gcc_custom.dll
@@ -363,7 +363,7 @@ For this guide, I was using Kubuntu and ArchLinux, but this guide can be adapt t
 #### Getting the required library and tools:
 
 * Download wxWidgets 3.2 source code from [here](https://github.com/wxWidgets/wxWidgets/releases),
-choose wxWidgets-3.2.4.tar.bz2 and extract it to somewhere, for example, your home directory.
+choose wxWidgets-3.2.11.tar.bz2 and extract it to somewhere, for example, your home directory.
 If your Linux distribution have wxWidgets 3.2 package, you can skip this and use a command like below command to install wxWidgets 3.2.
 
   for Debian and it's derivative

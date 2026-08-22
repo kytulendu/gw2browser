@@ -19,8 +19,8 @@
 					<Add option="-DGLEW_STATIC" />
 					<Add directory="../../mpg123" />
 					<Add directory="../../openal-soft/include" />
-					<Add directory="../../wxWidgets-3.2.4/include" />
-					<Add directory="../../wxWidgets-3.2.4/lib/gcc_dll/mswud" />
+					<Add directory="../../wxWidgets-3.2.11/include" />
+					<Add directory="../../wxWidgets-3.2.11/lib/gcc_dll/mswud" />
 					<Add directory="../extern/freetype/include" />
 					<Add directory="../extern/glew/include" />
 					<Add directory="../extern/glm" />
@@ -33,7 +33,7 @@
 					<Add directory="../src" />
 				</Compiler>
 				<ResourceCompiler>
-					<Add directory="../../wxWidgets-3.2.4/include" />
+					<Add directory="../../wxWidgets-3.2.11/include" />
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libglew32.dll.a" />
@@ -66,7 +66,7 @@
 					<Add library="libuuid.a" />
 					<Add directory="../../mpg123" />
 					<Add directory="../../openal-soft/libs/Win64" />
-					<Add directory="../../wxWidgets-3.2.4/lib/gcc_dll" />
+					<Add directory="../../wxWidgets-3.2.11/lib/gcc_dll" />
 					<Add directory="../extern/freetype/build" />
 					<Add directory="../extern/glew/lib" />
 					<Add directory="../extern/gw2dattools/lib/Debug" />
@@ -90,8 +90,8 @@
 					<Add option="-DGLEW_STATIC" />
 					<Add directory="../../mpg123" />
 					<Add directory="../../openal-soft/include" />
-					<Add directory="../../wxWidgets-3.2.4/include" />
-					<Add directory="../../wxWidgets-3.2.4/lib/gcc_dll/mswu" />
+					<Add directory="../../wxWidgets-3.2.11/include" />
+					<Add directory="../../wxWidgets-3.2.11/lib/gcc_dll/mswu" />
 					<Add directory="../extern/freetype/include" />
 					<Add directory="../extern/glew/include" />
 					<Add directory="../extern/glm" />
@@ -104,7 +104,7 @@
 					<Add directory="../src" />
 				</Compiler>
 				<ResourceCompiler>
-					<Add directory="../../wxWidgets-3.2.4/include" />
+					<Add directory="../../wxWidgets-3.2.11/include" />
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />
@@ -138,7 +138,7 @@
 					<Add library="libuuid.a" />
 					<Add directory="../../mpg123" />
 					<Add directory="../../openal-soft/libs/Win64" />
-					<Add directory="../../wxWidgets-3.2.4/lib/gcc_dll" />
+					<Add directory="../../wxWidgets-3.2.11/lib/gcc_dll" />
 					<Add directory="../extern/freetype/build" />
 					<Add directory="../extern/glew/lib" />
 					<Add directory="../extern/gw2dattools/lib/Release" />
